@@ -278,6 +278,8 @@ import {
   Lightbulb,
   LightbulbOff,
   GripHorizontal,
+  Moon,
+  Sun,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -297,6 +299,7 @@ import {
   Draggable,
   DropResult,
 } from "@hello-pangea/dnd";
+import { useTheme } from "next-themes";
 
 // --- Types ---
 interface Device {
@@ -333,6 +336,7 @@ export default function Dashboard() {
   const [ip, setIp] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const { theme, setTheme } = useTheme();
 
   // --- 1. Chargement ---
   useEffect(() => {
@@ -348,15 +352,17 @@ export default function Dashboard() {
   useEffect(() => {
     if (!mounted) return;
     localStorage.setItem(STORAGE_KEY_DEVICES, JSON.stringify(devices));
-    
-    const deviceIds = devices.map(d => d.id);
-    const isValidOrder = order.length === deviceIds.length && order.every(id => deviceIds.includes(id));
-    
+
+    const deviceIds = devices.map((d) => d.id);
+    const isValidOrder =
+      order.length === deviceIds.length &&
+      order.every((id) => deviceIds.includes(id));
+
     if (!isValidOrder) {
-      const existingOrderedIds = order.filter(id => deviceIds.includes(id));
-      const newIds = deviceIds.filter(id => !existingOrderedIds.includes(id));
+      const existingOrderedIds = order.filter((id) => deviceIds.includes(id));
+      const newIds = deviceIds.filter((id) => !existingOrderedIds.includes(id));
       const finalOrder = [...existingOrderedIds, ...newIds];
-      
+
       if (JSON.stringify(finalOrder) !== JSON.stringify(order)) {
         setOrder(finalOrder);
         localStorage.setItem(STORAGE_KEY_ORDER, JSON.stringify(finalOrder));
@@ -369,12 +375,12 @@ export default function Dashboard() {
   // --- 3. Liste triée ---
   const orderedDevices = useMemo(() => {
     if (!mounted || devices.length === 0) return [];
-    const deviceMap = new Map(devices.map(d => [d.id, d]));
+    const deviceMap = new Map(devices.map((d) => [d.id, d]));
     const sorted = order
-      .map(id => deviceMap.get(id))
+      .map((id) => deviceMap.get(id))
       .filter((d): d is Device => d !== undefined);
-    const sortedIds = new Set(sorted.map(d => d.id));
-    const remaining = devices.filter(d => !sortedIds.has(d.id));
+    const sortedIds = new Set(sorted.map((d) => d.id));
+    const remaining = devices.filter((d) => !sortedIds.has(d.id));
     return [...sorted, ...remaining];
   }, [devices, order, mounted]);
 
@@ -466,8 +472,12 @@ export default function Dashboard() {
     const destinationIndex = result.destination.index;
     if (sourceIndex === destinationIndex) return;
 
-    const reorderedDevices = reorder(orderedDevices, sourceIndex, destinationIndex);
-    setOrder(reorderedDevices.map(d => d.id));
+    const reorderedDevices = reorder(
+      orderedDevices,
+      sourceIndex,
+      destinationIndex
+    );
+    setOrder(reorderedDevices.map((d) => d.id));
   };
 
   if (!mounted) return null;
@@ -477,23 +487,64 @@ export default function Dashboard() {
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-4xl font-bold text-gray-800">Mes Raspberry</h1>
-          <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogTrigger asChild>
-              <Button><Plus className="mr-2 h-4 w-4" />Ajouter</Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader><DialogTitle>Nouveau Raspberry Pi</DialogTitle></DialogHeader>
-              <div className="space-y-4 pt-4">
-                <div><Label>Nom</Label><Input value={name} onChange={(e) => setName(e.target.value)} placeholder="RPI Salon" /></div>
-                <div><Label>Adresse IP</Label><Input value={ip} onChange={(e) => setIp(e.target.value)} placeholder="192.168.1.50" /></div>
-                <Button onClick={addDevice} className="w-full">Ajouter</Button>
-              </div>
-            </DialogContent>
-          </Dialog>
+          <div>
+            <Dialog open={isOpen} onOpenChange={setIsOpen}>
+              <DialogTrigger asChild>
+                <Button>
+                  <Plus className="mr-2 h-4 w-4" />
+                  Ajouter
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Nouveau Raspberry Pi</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4 pt-4">
+                  <div>
+                    <Label>Nom</Label>
+                    <Input
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="RPI Salon"
+                    />
+                  </div>
+                  <div>
+                    <Label>Adresse IP</Label>
+                    <Input
+                      value={ip}
+                      onChange={(e) => setIp(e.target.value)}
+                      placeholder="192.168.1.50"
+                    />
+                  </div>
+                  <Button onClick={addDevice} className="w-full">
+                    Ajouter
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
+            <Button
+              variant="outline"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            >
+              {theme === "dark" ? (
+                <Sun className="w-5 h-5" />
+              ) : (
+                <Moon className="w-5 h-5" />
+              )}
+            </Button>
+          </div>
         </div>
 
         {devices.length === 0 ? (
-          <Card className="text-center py-16 border-dashed"><CardContent><p className="text-gray-500 mb-4">Aucun Raspberry Pi configuré</p><Button variant="outline" onClick={() => setIsOpen(true)}><Plus className="mr-2 h-4 w-4" />Ajouter un RPI</Button></CardContent></Card>
+          <Card className="text-center py-16 border-dashed">
+            <CardContent>
+              <p className="text-gray-500 mb-4">Aucun Raspberry Pi configuré</p>
+              <Button variant="outline" onClick={() => setIsOpen(true)}>
+                <Plus className="mr-2 h-4 w-4" />
+                Ajouter un RPI
+              </Button>
+            </CardContent>
+          </Card>
         ) : (
           <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId="rpi-grid" direction="horizontal">
@@ -502,7 +553,7 @@ export default function Dashboard() {
                   {...provided.droppableProps}
                   ref={provided.innerRef}
                   // MODIFICATION ICI: Utilisation de Flex avec marges négatives pour simuler une Grid fluide
-                  className="flex flex-wrap -m-3" 
+                  className="flex flex-wrap -m-3"
                 >
                   {orderedDevices.map((device, index) => (
                     <Draggable
@@ -520,32 +571,53 @@ export default function Dashboard() {
                           style={{
                             ...provided.draggableProps.style,
                             // Optionnel: z-index élevé pendant le drag pour passer au dessus des autres
-                            zIndex: snapshot.isDragging ? 999 : "auto", 
+                            zIndex: snapshot.isDragging ? 999 : "auto",
                           }}
                         >
                           {/* h-full est important pour que toutes les cartes d'une ligne aient la même hauteur */}
-                          <Card className={`h-full relative transition-shadow ${snapshot.isDragging ? "shadow-2xl ring-2 ring-black rotate-2 scale-105 bg-white" : "shadow-sm"}`}>
-                            
+                          <Card
+                            className={`h-full relative transition-shadow ${
+                              snapshot.isDragging
+                                ? "shadow-2xl ring-2 ring-black rotate-2 scale-105 bg-white"
+                                : "shadow-sm"
+                            }`}
+                          >
                             {/* Overlay OFFLINE */}
                             {device.isOffline && (
                               <div className="absolute inset-0 top-[60px] bg-white/80 backdrop-blur-sm rounded-b-lg flex flex-col items-center justify-center z-10 text-gray-500">
-                                <span className="font-bold text-lg">HORS LIGNE</span>
-                                <span className="text-xs">Vérifiez la connexion</span>
+                                <span className="font-bold text-lg">
+                                  HORS LIGNE
+                                </span>
+                                <span className="text-xs">
+                                  Vérifiez la connexion
+                                </span>
                               </div>
                             )}
 
                             <CardHeader className="pb-2">
                               <div className="flex justify-between items-start">
                                 <div className="flex items-center gap-3">
-                                  <div {...provided.dragHandleProps} className="cursor-grab active:cursor-grabbing p-1 rounded hover:bg-gray-100 text-gray-400">
+                                  <div
+                                    {...provided.dragHandleProps}
+                                    className="cursor-grab active:cursor-grabbing p-1 rounded hover:bg-gray-100 text-gray-400"
+                                  >
                                     <GripHorizontal className="h-5 w-5" />
                                   </div>
                                   <div>
-                                    <CardTitle className="text-lg">{device.name}</CardTitle>
-                                    <p className="text-xs text-gray-400 font-mono mt-1">{device.ip}</p>
+                                    <CardTitle className="text-lg">
+                                      {device.name}
+                                    </CardTitle>
+                                    <p className="text-xs text-gray-400 font-mono mt-1">
+                                      {device.ip}
+                                    </p>
                                   </div>
                                 </div>
-                                <Button variant="ghost" size="icon" className="text-red-400 hover:text-red-600 hover:bg-red-50" onClick={() => deleteDevice(device.id)}>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="text-red-400 hover:text-red-600 hover:bg-red-50"
+                                  onClick={() => deleteDevice(device.id)}
+                                >
                                   <Trash2 className="h-4 w-4" />
                                 </Button>
                               </div>
@@ -553,23 +625,52 @@ export default function Dashboard() {
 
                             <CardContent className="space-y-5 pt-2">
                               <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl p-5 text-center border border-orange-100">
-                                <div className="flex justify-center mb-2"><Thermometer className="h-6 w-6 text-orange-500" /></div>
+                                <div className="flex justify-center mb-2">
+                                  <Thermometer className="h-6 w-6 text-orange-500" />
+                                </div>
                                 {device.temperature !== null ? (
                                   <>
-                                    <div className="text-3xl font-bold text-gray-800">{device.temperature.toFixed(1)}°C</div>
-                                    {device.humidity !== null && <div className="flex items-center justify-center gap-1.5 mt-2 text-sm text-blue-600 font-medium"><Droplets className="h-3 w-3" />{device.humidity.toFixed(1)}%</div>}
+                                    <div className="text-3xl font-bold text-gray-800">
+                                      {device.temperature.toFixed(1)}°C
+                                    </div>
+                                    {device.humidity !== null && (
+                                      <div className="flex items-center justify-center gap-1.5 mt-2 text-sm text-blue-600 font-medium">
+                                        <Droplets className="h-3 w-3" />
+                                        {device.humidity.toFixed(1)}%
+                                      </div>
+                                    )}
                                   </>
-                                ) : <div className="text-gray-400 py-2">--°C</div>}
+                                ) : (
+                                  <div className="text-gray-400 py-2">--°C</div>
+                                )}
                               </div>
 
                               <div className="flex items-center justify-between p-3 bg-gray-50 border border-gray-100 rounded-lg">
                                 <div className="flex items-center gap-3">
-                                  <div className={`p-2 rounded-full ${device.lampStatus === 'on' ? 'bg-yellow-100 text-yellow-600' : 'bg-gray-200 text-gray-500'}`}>
-                                      {device.lampStatus === "on" ? <Lightbulb className="h-5 w-5" /> : <LightbulbOff className="h-5 w-5" />}
+                                  <div
+                                    className={`p-2 rounded-full ${
+                                      device.lampStatus === "on"
+                                        ? "bg-yellow-100 text-yellow-600"
+                                        : "bg-gray-200 text-gray-500"
+                                    }`}
+                                  >
+                                    {device.lampStatus === "on" ? (
+                                      <Lightbulb className="h-5 w-5" />
+                                    ) : (
+                                      <LightbulbOff className="h-5 w-5" />
+                                    )}
                                   </div>
-                                  <span className="font-medium text-sm text-gray-700">Eclairage</span>
+                                  <span className="font-medium text-sm text-gray-700">
+                                    Eclairage
+                                  </span>
                                 </div>
-                                <Switch checked={device.lampStatus === "on"} onCheckedChange={() => toggleLamp(device.ip, device.lampStatus)} disabled={device.isOffline} />
+                                <Switch
+                                  checked={device.lampStatus === "on"}
+                                  onCheckedChange={() =>
+                                    toggleLamp(device.ip, device.lampStatus)
+                                  }
+                                  disabled={device.isOffline}
+                                />
                               </div>
                             </CardContent>
                           </Card>
