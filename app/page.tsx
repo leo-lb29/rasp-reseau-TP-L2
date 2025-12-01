@@ -483,15 +483,15 @@ export default function Dashboard() {
   if (!mounted) return null;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen  p-8">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-4xl font-bold text-gray-800">Mes Raspberry</h1>
-          <div>
+          <div className="flex gap-x-2 items-center">
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
               <DialogTrigger asChild>
                 <Button>
-                  <Plus className="mr-2 h-4 w-4" />
+                  <Plus className="h-4 w-4" />
                   Ajouter
                 </Button>
               </DialogTrigger>
@@ -523,7 +523,7 @@ export default function Dashboard() {
               </DialogContent>
             </Dialog>
             <Button
-              variant="outline"
+              variant="outline" size={"icon-lg"}
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             >
               {theme === "dark" ? (
@@ -538,7 +538,7 @@ export default function Dashboard() {
         {devices.length === 0 ? (
           <Card className="text-center py-16 border-dashed">
             <CardContent>
-              <p className="text-gray-500 mb-4">Aucun Raspberry Pi configuré</p>
+              <p className=" mb-4">Aucun Raspberry Pi configuré</p>
               <Button variant="outline" onClick={() => setIsOpen(true)}>
                 <Plus className="mr-2 h-4 w-4" />
                 Ajouter un RPI
@@ -578,13 +578,13 @@ export default function Dashboard() {
                           <Card
                             className={`h-full relative transition-shadow ${
                               snapshot.isDragging
-                                ? "shadow-2xl ring-2 ring-black rotate-2 scale-105 bg-white"
+                                ? "shadow-2xl ring-2 ring-black dark:ring-white rotate-2 scale-105 "
                                 : "shadow-sm"
                             }`}
                           >
                             {/* Overlay OFFLINE */}
                             {device.isOffline && (
-                              <div className="absolute inset-0 top-[60px] bg-white/80 backdrop-blur-sm rounded-b-lg flex flex-col items-center justify-center z-10 text-gray-500">
+                              <div className="absolute inset-0 top-[55px] bg-white/80 dark:bg-dark/80 backdrop-blur-sm rounded-b-lg flex flex-col items-center justify-center z-10 text-gray-500">
                                 <span className="font-bold text-lg">
                                   HORS LIGNE
                                 </span>
@@ -615,7 +615,7 @@ export default function Dashboard() {
                                 <Button
                                   variant="ghost"
                                   size="icon"
-                                  className="text-red-400 hover:text-red-600 hover:bg-red-50"
+                                  className="text-red-400 hover:text-red-600 hover:bg-red-50 dark:text-red-500 dark:hover:text-red-400 dark:hover:bg-red-950"
                                   onClick={() => deleteDevice(device.id)}
                                 >
                                   <Trash2 className="h-4 w-4" />
@@ -624,26 +624,26 @@ export default function Dashboard() {
                             </CardHeader>
 
                             <CardContent className="space-y-5 pt-2">
-                              <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl p-5 text-center border border-orange-100">
+                                <div className="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-950 dark:to-amber-950 rounded-xl p-5 text-center border border-orange-100 dark:border-orange-800">
                                 <div className="flex justify-center mb-2">
-                                  <Thermometer className="h-6 w-6 text-orange-500" />
+                                  <Thermometer className="h-6 w-6 text-orange-500 dark:text-orange-400" />
                                 </div>
                                 {device.temperature !== null ? (
                                   <>
-                                    <div className="text-3xl font-bold text-gray-800">
-                                      {device.temperature.toFixed(1)}°C
+                                  <div className="text-3xl font-bold text-gray-800 dark:text-gray-100">
+                                    {device.temperature.toFixed(1)}°C
+                                  </div>
+                                  {device.humidity !== null && (
+                                    <div className="flex items-center justify-center gap-1.5 mt-2 text-sm text-blue-600 dark:text-blue-400 font-medium">
+                                    <Droplets className="h-3 w-3" />
+                                    {device.humidity.toFixed(1)}%
                                     </div>
-                                    {device.humidity !== null && (
-                                      <div className="flex items-center justify-center gap-1.5 mt-2 text-sm text-blue-600 font-medium">
-                                        <Droplets className="h-3 w-3" />
-                                        {device.humidity.toFixed(1)}%
-                                      </div>
-                                    )}
+                                  )}
                                   </>
                                 ) : (
-                                  <div className="text-gray-400 py-2">--°C</div>
+                                  <div className="text-gray-400 dark:text-gray-500 py-2">--°C</div>
                                 )}
-                              </div>
+                                </div>
 
                               <div className="flex items-center justify-between p-3 bg-gray-50 border border-gray-100 rounded-lg">
                                 <div className="flex items-center gap-3">
