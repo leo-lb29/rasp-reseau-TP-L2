@@ -1,5 +1,3 @@
-# Ignore all files except index.html and README.md
-*
 !.gitignore
 !index.html
 !README.md

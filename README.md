@@ -1,38 +1,30 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Dashboard Raspberry Pi
 
-## Getting Started
+Un tableau de bord web pour gérer et monitorer vos Raspberry Pi en réseau.
 
-First, run the development server:
+## Fonctionnalités
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- 📊 **Monitoring en temps réel** : Température, humidité et état de l'éclairage
+- 🎛️ **Contrôle de lampe** : Allumez/éteignez les lampes connectées
+- 🔄 **Drag & Drop** : Réorganisez l'ordre de vos appareils
+- 🌓 **Mode sombre** : Interface adaptable avec sauvegarde des préférences
+- 💾 **Stockage local** : Vos appareils sont sauvegardés dans le navigateur
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Installation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Ouvrez `index.html` dans un navigateur web
+2. Cliquez sur "Ajouter" pour enregistrer vos Raspberry Pi
+3. Entrez le nom et l'adresse IP (format : `192.168.1.50:65030`)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Utilisation
 
-## Learn More
+- **Ajouter un appareil** : Bouton "Ajouter" dans le header
+- **Basculer l'éclairage** : Cliquez sur le switch du card
+- **Réorganiser** : Glissez les appareils par l'icône ⋮⋮
+- **Supprimer** : Bouton corbeille en haut à droite du card
 
-To learn more about Next.js, take a look at the following resources:
+## Technologies
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# rasp-reseau-TP-L2
-# rasp-reseau-TP-L2
+- **Tailwind CSS** : Styling responsive
+- **Sortable.js** : Drag & drop
+- **LocalStorage** : Persistence des données
